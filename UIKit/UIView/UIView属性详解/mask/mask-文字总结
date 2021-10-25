@@ -1,0 +1,21 @@
+1.mask 是CALayer的一个属性，同时也是CALayer 类型的。
+
+2.原理：控制layer本身渲染的一个layer。
+效果是：比如imageLayer有一个maskLayer作为mask（注意maskLayer可以不跟imageLayer大小一样），
+那maskLayer透明的地方，imageLayer就不会渲染，而是变透明，显示出imageLayer之后的内容，
+maskLayer不透明的地方，imageLayer就会正常渲染，
+显示出imageLayer本来的内容如果maskLayer比imageLayer要小，
+那默认的maskLayer之外的地方都是透明的，都不会渲染。 
+
+3.mask 的作用就是让父图层部分区域可见。
+
+4.mask 的backgroundColor必须设置，不设置mask 背景就是透明的，mask 是不会起作用的，
+但是backgroundColor设置什么颜色无所谓。
+
+5.为一个layer的mask 创建一个新的mask时，这个新的mask不能有superlayer 和sublayer。
+（官方文档的说明）
+
+6.mask 可以配合CAGradientLayer、CAShapeLayer 使用。
+可以实现蒙层透明度、显示不同形状图层、图案镂空、文字变色等等功能。
+
+7.mask在动画中使用，可以产生很好的动画效果。

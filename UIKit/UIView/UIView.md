@@ -159,8 +159,163 @@ An optional view whose alpha channel is used to mask a view’s content.
 一个可选视图，其alpha通道用于屏蔽视图的内容。
 
 
-class var layerClass: AnyClass
+`class var layerClass: AnyClass`
 Returns the class used to create the layer for instances of this class.
-var layer: CALayer
+`var layer: CALayer`
 The view’s Core Animation layer used for rendering.
+
+
+### 配置事件相关行为
+
+#### isUserInteractionEnabled
+
+`var isUserInteractionEnabled: Bool { get set }`
+
+当设置为false时，用于视图的ouch, press, keyboard, and focus事件将被忽略并从事件队列中删除。当设置为true时，事件将正常地传递给视图。此属性的默认值为true。
+在动画期间，动画中涉及的所有视图的用户交互都被暂时禁用，不管这个属性中的值是多少。在配置动画时，可以通过指定allowUserInteraction选项禁用此行为。
+
+一些UIKit子类覆盖这个属性并返回一个不同的默认值。请参阅该类的文档，以确定它是否返回不同的值。
+
+#### var isMultipleTouchEnabled: Bool
+`var isMultipleTouchEnabled: Bool { get set }`
+A Boolean value that indicates whether the view receives more than one touch at a time.
+当设置为true时，视图接收与多点触摸序列相关的所有触摸，并在视图的边界内开始。当设置为false时，视图只接收在视图边界内开始的多点触摸序列中的第一个触摸事件。此属性的默认值为false。
+
+此属性不影响附加到视图的手势识别器。手势识别器接收视图中发生的所有触摸。
+
+当此属性为false时，同一窗口中的其他视图仍然可以接收触摸事件。如果你想让这个视图专门处理多点触摸事件，设置这个属性和isExclusiveTouch属性的值为true。
+
+这个属性不能阻止视图被要求处理多个触摸。例如，两个子视图都可以将它们的触摸转发给一个共同的父视图，比如一个窗口或视图控制器的根视图。这个属性决定了有多少最初针对视图的触摸被交付给该视图。
+
+#### var isExclusiveTouch: Bool
+
+A Boolean value that indicates whether the receiver handles touch events exclusively.
+将此属性设置为true会导致接收方阻止将触摸事件传递给同一窗口中的其他视图。此属性的默认值为false。
+
+### Configuring the Bounds and Frame Rectangles
+
+#### var frame: CGRect
+
+这个矩形定义了视图在父视图坐标系中的大小和位置。在布局操作中使用这个矩形来设置视图的大小和位置。设置此属性将更改center属性指定的点，并相应地更改边界矩形的大小。框架矩形的坐标总是用点指定的。
+警告
+如果transform属性不是恒等变换，则该属性的值是未定义的，因此应该被忽略。
+更改框架矩形会自动重新显示视图，而不需要调用它的`draw(_:)`方法。如果你想让UIKit在框架矩形改变时调用`draw(_:)`方法，设置`contentMode`属性为`UIView.ContentMode.redraw`。
+对该属性的更改可以是动画的。但是，如果transform属性包含非恒等转换，则frame属性的值是未定义的，不应该被修改。在这种情况下，使用center属性重新定位视图，并使用bounds属性调整大小。
+
+#### var bounds: CGRect
+
+默认边界原点为(0,0)，大小与frame属性中的矩形大小相同。改变这个矩形的大小部分会使视图相对于其中心点增长或收缩。改变大小也会改变frame属性中矩形的大小以匹配。边界矩形的坐标总是用点指定的。
+改变边界矩形会自动重新显示视图，而不需要调用它的`draw(_:)`方法。如果你想让UIKit调用`draw(_:)`方法，设置`contentMode`属性为`UIView.ContentMode.redraw`。
+对该属性的更改可以是动画的。
+
+#### var center: CGPoint
+中心点是在父视图坐标系统中的点中指定的。设置此属性会适当地更新frame属性中矩形的原点。
+当你想要改变视图的位置时，使用这个属性，而不是frame属性。中心点总是有效的，即使缩放或旋转因子应用到视图的变换。对该属性的更改可以是动画的。
+
+#### var transform: CGAffineTransform
+
+使用此属性在父视图的坐标系统中缩放或旋转视图的框架矩形。(要改变视图的位置，请修改center属性。)该属性的默认值是CGAffineTransformIdentity。
+转换发生在相对于视图锚点的位置。默认情况下，锚点等于框架矩形的中心点。要更改锚点，请修改视图基础CALayer对象的anchorPoint属性。
+对该属性的更改可以是动画的。
+在ios8.0及更高版本中，transform属性不会影响Auto Layout。自动布局基于未转换的框架计算视图的对齐矩形。
+当这个属性的值不是恒等变换时，frame属性中的值是未定义的，应该被忽略。
+
+#### var transform3D: CATransform3D
+
+### Managing the View Hierarchy
+#### var superview: UIView?
+The receiver’s superview, or nil if it has none.
+
+#### var subviews: [UIView]
+The receiver’s immediate subviews.
+可以使用此属性检索与自定义视图层次结构关联的子视图。**数组中的子视图的顺序反映了它们在屏幕上的可见顺序，索引为0的视图是最后面的视图。**
+对于在UIKit和其他系统框架中声明的复杂视图，视图的任何子视图通常都被认为是私有的，随时都可能发生变化。因此，您不应该试图检索或修改这些系统提供的视图类型的子视图。如果您这样做，您的代码可能会在未来的系统更新期间崩溃。
+
+#### var window: UIWindow?
+The receiver’s window object, or nil if it has none.
+This property is nil if the view has not yet been added to a window.
+
+#### func addSubview(UIView)
+Adds a view to the end of the receiver’s list of subviews.
+
+#### func bringSubviewToFront(UIView)
+Moves the specified subview so that it appears on top of its siblings.
+这个方法将指定的视图移动到子视图属性中视图数组的末尾。
+
+#### func sendSubviewToBack(UIView)
+Moves the specified subview so that it appears behind its siblings.
+这个方法将指定的视图移动到子视图属性中视图数组的起始。
+
+#### func removeFromSuperview()
+Unlinks the view from its superview and its window, and removes it from the responder chain.
+
+#### func insertSubview(UIView, at: Int)
+Inserts a subview at the specified index.
+
+#### func insertSubview(UIView, aboveSubview: UIView)
+Inserts a view above another view in the view hierarchy.
+
+#### func insertSubview(UIView, belowSubview: UIView)
+Inserts a view below another view in the view hierarchy.
+
+#### func exchangeSubview(at: Int, withSubviewAt: Int)
+Exchanges the subviews at the specified indices.
+
+#### func isDescendant(of: UIView) -> Bool
+Returns a Boolean value indicating whether the receiver is a subview of a given view or identical to that view.
+
+### Observing View-Related Changes
+#### func didAddSubview(UIView)
+Tells the view that a subview was added.
+
+#### func willRemoveSubview(UIView)
+Tells the view that a subview is about to be removed.
+
+#### func willMove(toSuperview: UIView?)
+Tells the view that its superview is about to change to the specified superview.
+
+#### func didMoveToSuperview()
+Tells the view that its superview changed.
+
+#### func willMove(toWindow: UIWindow?)
+Tells the view that its window object is about to change.
+
+#### func didMoveToWindow()
+Tells the view that its window object changed.
+
+
+### Configuring Content Margins
+
+#### Positioning Content Within Layout Margins
+
+[详细见目录Layout Margins](UIView属性详解/Layout%20Margins/)
+
+#### var directionalLayoutMargins: NSDirectionalEdgeInsets
+[详细见目录Layout Margins](UIView属性详解/Layout%20Margins/)
+
+#### var layoutMargins: UIEdgeInsets
+
+在视图中布局内容时使用的默认间距。
+
+`var layoutMargins: UIEdgeInsets { get set }`
+
+在ios11及后续版本中，使用`directionalLayoutMargins`属性来指定布局边距，而不是这个属性。`directionalLayoutMargins`属性中的 leading and trailing与此属性中的 left and right同步。例如，在使用从左到右语言的系统中，将leading设置为20个点会导致该属性的left设置为20个点。
+对于视图控制器的根视图，此属性的默认值反映了系统最小边距和安全区插入。对于视图层次结构中的其他子视图，默认的布局边距通常是每边8个点，但如果视图不是完全在安全区域内，或者如果`preservesSuperviewLayoutMargins`属性为true，值可能会更大。
+这个属性指定视图边缘和任何子视图之间所需的空间量(以点为单位)。自动布局使用你的页边距作为放置内容的提示。例如，如果你使用格式字符串" |-[subview]-| "指定一组水平约束，子视图的左右边缘将被相应的布局边距从父视图的边缘插入。当视图的边缘接近父视图的边缘，并且preservesSuperviewLayoutMargins属性为true时，实际的布局边距可能会增加，以防止内容与父视图的边距重叠。
+
+#### preservesSuperviewLayoutMargins
+
+一个布尔值，指示当前视图是否也尊重其父视图的边距。
+
+`var preservesSuperviewLayoutMargins: Bool { get set }`
+
+当此属性的值为true时，父视图的边距在布局内容时也会被考虑。这个边距会影响视图和父视图之间的距离小于相应边距的布局。例如，您可能有一个内容视图，其框架精确地匹配其父视图的边界。当任何父视图的边距在内容视图和它自己的边距所代表的区域内时，UIKit调整内容视图的布局以尊重父视图的边距。调整的数量是确保内容也在父视图的边距内所需的最小数量。
+此属性的默认值为false。
+[具体讲解](UIView属性详解/Layout%20Margins/3-LayoutMargin%20&%20preservesSuperviewLayoutMargins%20学习笔记%20-%20简书.pdf)
+
+#### func layoutMarginsDidChange()
+
+这个方法的默认实现什么也不做。子类可以重写这个方法，并在视图的layoutmargin属性的值发生变化时使用它进行响应。例如，如果您的视图子类手动处理布局或在绘图期间使用布局边距，您可以重写此方法。在这两种情况下，您都可以使用此方法来启动绘图或布局更新。
+
+### Getting the Safe Area
 
