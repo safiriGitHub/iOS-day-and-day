@@ -319,3 +319,166 @@ Tells the view that its window object changed.
 
 ### Getting the Safe Area
 
+#### Positioning Content Relative to the Safe Area
+#### var safeAreaInsets: UIEdgeInsets
+#### var safeAreaLayoutGuide: UILayoutGuide
+[具体讲解](UIView属性详解/Safe%20Area/2-随手记在iPhone%20X上的适配实践总结%20-%20CocoaChina_一站式开发者成长社区.pdf)
+
+#### func safeAreaInsetsDidChange()
+Called when the safe area of the view changes.
+
+#### var insetsLayoutMarginsFromSafeArea: Bool
+
+A Boolean value indicating whether the view's layout margins are updated automatically to reflect the safe area.
+一个布尔值，指示视图的布局边距是否自动更新以反映安全区域。
+当此属性的值为true时，安全区域之外的任何边距将被自动修改为属于安全区域边界。此属性的默认值为true。将该值更改为false允许您的边距保持在原来的位置，即使它们不在安全区域内。
+
+一个布尔值，指示是否自动更新视图的布局边距以反映安全区域,默认为true.
+单看这个属性,就知道其与layoutMargins、safeAreaInsets属性有关,事实也确实如此.
+iOS中layoutMargins 默认为 UIEdgeInsets(top: 8.0, left: 8.0, bottom: 8.0, right: 8.0)
+当insetsLayoutMarginsFromSafeArea == true时:
+layoutMargins = layoutMargins + safeAreaInsets;
+
+### Managing the View’s Constraints
+Adjust the size and position of the view using Auto Layout constraints.
+
+#### var constraints: [NSLayoutConstraint]
+The constraints held by the view.
+
+#### func addConstraint(NSLayoutConstraint)
+Adds a constraint on the layout of the receiving view or its subviews.
+约束必须只涉及在接收视图范围内的视图。具体来说，所涉及的任何视图必须要么是接收视图本身，要么是接收视图的子视图。添加到视图的约束被认为是由该视图持有的。求约束时使用的坐标系统是持有约束的视图的坐标系统。
+当开发iOS 8.0或更高版本时，将约束的isActive属性设置为true，而不是直接调用addConstraint(_:)方法。isActive属性会自动从正确的视图中添加和删除约束。
+
+#### func addConstraints([NSLayoutConstraint])
+Adds multiple constraints on the layout of the receiving view or its subviews.
+所有约束必须只涉及在接收视图范围内的视图。具体来说，所涉及的任何视图必须要么是接收视图本身，要么是接收视图的子视图。添加到视图的约束被认为是由该视图持有的。求每个约束时使用的坐标系统是包含该约束的视图的坐标系统。
+当开发iOS 8.0或更高版本时，使用NSLayoutConstraint类的activate(_:)方法而不是直接调用addConstraints(_:)方法。activate(_:)方法会自动将约束添加到正确的视图中。
+
+#### func removeConstraint(NSLayoutConstraint)
+Removes the specified constraint from the view.
+当开发iOS 8.0或更高版本时，将约束的isActive属性设置为false，而不是直接调用removeConstraint(_:)方法。isActive属性会自动从正确的视图中添加和删除约束。
+
+#### func removeConstraints([NSLayoutConstraint])
+Removes the specified constraints from the view.
+当开发iOS 8.0或更高版本时，使用NSLayoutConstraint类的deactivate(_:)方法而不是直接调用removeConstraints(_:)方法。deactivate(_:)方法自动从正确的视图中移除约束。
+
+### Creating Constraints Using Layout Anchors
+Attach Auto Layout constraints to one of the view's anchors.
+var bottomAnchor: NSLayoutYAxisAnchor
+A layout anchor representing the bottom edge of the view’s frame.
+var centerXAnchor: NSLayoutXAxisAnchor
+A layout anchor representing the horizontal center of the view’s frame.
+var centerYAnchor: NSLayoutYAxisAnchor
+A layout anchor representing the vertical center of the view’s frame.
+var firstBaselineAnchor: NSLayoutYAxisAnchor
+A layout anchor representing the baseline for the topmost line of text in the view.
+var heightAnchor: NSLayoutDimension
+A layout anchor representing the height of the view’s frame.
+var lastBaselineAnchor: NSLayoutYAxisAnchor
+A layout anchor representing the baseline for the bottommost line of text in the view.
+var leadingAnchor: NSLayoutXAxisAnchor
+A layout anchor representing the leading edge of the view’s frame.
+var leftAnchor: NSLayoutXAxisAnchor
+A layout anchor representing the left edge of the view’s frame.
+var rightAnchor: NSLayoutXAxisAnchor
+A layout anchor representing the right edge of the view’s frame.
+var topAnchor: NSLayoutYAxisAnchor
+A layout anchor representing the top edge of the view’s frame.
+var trailingAnchor: NSLayoutXAxisAnchor
+A layout anchor representing the trailing edge of the view’s frame.
+var widthAnchor: NSLayoutDimension
+A layout anchor representing the width of the view’s frame.
+
+[详细解释](UIView属性详解/NSLayoutAnchor/NSLayoutAnchor详解%20-%20简书.pdf)
+
+### Working with Layout Guides
+#### func addLayoutGuide(UILayoutGuide)
+Adds the specified layout guide to the view.
+这个方法将指定的布局指南添加到视图的layoutGuides数组的末尾。它还将视图分配给指南的owningView属性。每个指南只能有一个所属视图。
+在将指南添加到视图之后，它可以参与该视图层次结构的Auto Layout约束。
+
+#### var layoutGuides: [UILayoutGuide]
+The array of layout guide objects owned by this view.
+
+#### var layoutMarginsGuide: UILayoutGuide
+A layout guide representing the view’s margins.
+使用这个布局指南的锚来创建视图边距的约束。
+
+#### var readableContentGuide: UILayoutGuide
+A layout guide representing an area with a readable width within the view.
+一种布局指南，表示视图中具有可读宽度的区域。
+
+该布局指南定义了一个易于阅读的区域，用户无需移动头部来跟踪线条。可读内容区遵循以下规则:
+可读的内容指南永远不会超出视图的布局边距指南。
+可读的内容指南在布局边距指南中垂直居中。
+可读内容指南的宽度等于或小于为当前动态文本大小定义的可读宽度。
+使用可读的内容指南来布局一列文本。如果要布局多个列，可以使用参考线的宽度来确定列的最佳宽度。
+
+#### func removeLayoutGuide(UILayoutGuide)
+Removes the specified layout guide from the view.
+
+
+### Measuring in Auto Layout
+自动布局中的测量
+#### func systemLayoutSizeFitting(CGSize) -> CGSize
+Returns the optimal size of the view based on its current constraints.
+根据当前约束返回视图的最佳大小。
+`func systemLayoutSizeFitting(_ targetSize: CGSize) -> CGSize`
+**targetSize**
+你想要的尺寸。要获得一个尽可能小的视图，指定常量`layoutFittingCompressedSize`。要获得尽可能大的视图，请指定常量`layoutFittingExpandedSize`。
+该方法返回视图的size值，该值最优地满足视图的当前约束，并尽可能接近targetSize参数中的值。这个方法实际上不会改变视图的大小。
+
+```
+    [self addSubview:self.evaluateTitleLbl];
+
+    [_evaluateTitleLbl mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(_evaluateTitle.mas_left);
+        make.top.equalTo(_evaluateTitle.mas_bottom).offset(12);
+        make.right.equalTo(self.mas_right).offset(-15);
+    }];
+CGfloat height =  [self.evaluateTitleLbl systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
+
+这里的height 就是获取布局后的 label 实际高度。
+```
+
+#### func systemLayoutSizeFitting(CGSize, withHorizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize
+Returns the optimal size of the view based on its constraints and the specified fitting priorities.
+根据视图的约束和指定的合适优先级返回视图的最佳大小。
+**targetSize**
+你想要的尺寸。要获得一个尽可能小的视图，指定常量`layoutFittingCompressedSize`。要获得尽可能大的视图，请指定常量`layoutFittingExpandedSize`。
+**horizontalFittingPriority**
+水平约束的优先级。指定`fittingSizeLevel`以获得尽可能接近targetSize宽度值的宽度。
+**verticalFittingPriority**
+垂直约束的优先级。指定`fittingSizeLevel`以获得一个高度，尽可能接近targetSize的高度值。
+当您希望在确定视图的最佳尺寸时对视图的约束进行优先级排序时，请使用此方法。这个方法实际上不会改变视图的大小。
+
+#### var intrinsicContentSize: CGSize
+The natural size for the receiving view, considering only properties of the view itself.
+`var intrinsicContentSize: CGSize { get }`
+接收视图的自然大小，仅考虑视图本身的属性。
+自定义视图通常具有布局系统不知道的内容。设置此属性允许自定义视图根据其内容向布局系统传达其希望的大小。这种内在大小必须独立于内容框架，例如,因为无法根据高度的变化动态地将宽度的变化传达给布局系统。
+如果一个自定义视图对于给定的维度没有内在大小，那么它可以对该维度使用`noIntrinsicmetric`。
+
+#### func invalidateIntrinsicContentSize()
+Invalidates the view’s intrinsic content size.
+使视图的内在内容大小无效。
+当自定义视图中发生更改，使其内在内容大小无效时调用此方法。这允许基于约束的布局系统在下一个布局过程中考虑新的内在内容大小。
+
+#### func contentCompressionResistancePriority(for: NSLayoutConstraint.Axis) -> UILayoutPriority
+Returns the priority with which a view resists being made smaller than its intrinsic size.
+返回视图拒绝被设置为小于其固有大小的优先级。
+`func contentCompressionResistancePriority(for axis: NSLayoutConstraint.Axis) -> UILayoutPriority`
+
+返回值：视图在指定轴上抵抗从其固有尺寸被压缩的优先级。
+基于约束的布局系统在为视图确定最佳布局时使用这些优先级，这些视图遇到的约束要求它们小于其内在大小。
+子类不应该重写这个方法。相反，自定义视图应该在创建时为其内容设置默认值，通常为UILayoutPriorityDefaultLow或UILayoutPriorityDefaultHigh。
+
+#### func setContentCompressionResistancePriority(UILayoutPriority, for: NSLayoutConstraint.Axis)
+Sets the priority with which a view resists being made smaller than its intrinsic size.
+
+#### func contentHuggingPriority(for: NSLayoutConstraint.Axis) -> UILayoutPriority
+Returns the priority with which a view resists being made larger than its intrinsic size.
+
+#### func setContentHuggingPriority(UILayoutPriority, for: NSLayoutConstraint.Axis)
+Sets the priority with which a view resists being made larger than its intrinsic size.
