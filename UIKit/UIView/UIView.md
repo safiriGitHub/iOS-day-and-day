@@ -232,57 +232,69 @@ The receiver’s immediate subviews.
 对于在UIKit和其他系统框架中声明的复杂视图，视图的任何子视图通常都被认为是私有的，随时都可能发生变化。因此，您不应该试图检索或修改这些系统提供的视图类型的子视图。如果您这样做，您的代码可能会在未来的系统更新期间崩溃。
 
 #### var window: UIWindow?
-The receiver’s window object, or nil if it has none.
-This property is nil if the view has not yet been added to a window.
+如果视图还没有被添加到窗口中，则此属性为nil。
 
 #### func addSubview(UIView)
-Adds a view to the end of the receiver’s list of subviews.
+这个方法建立了对视图的强引用，并将它的下一个响应器设置为接收方，即它的新父视图。
+视图只能有一个父视图。如果视图已经有一个父视图，而那个视图不是接收视图，这个方法会在接收视图成为它的新父视图之前移除之前的父视图。
 
 #### func bringSubviewToFront(UIView)
-Moves the specified subview so that it appears on top of its siblings.
-这个方法将指定的视图移动到子视图属性中视图数组的末尾。
+移动指定的子视图，使其显示在同级视图的顶部。也就是subviews数组的末尾。
+
 
 #### func sendSubviewToBack(UIView)
-Moves the specified subview so that it appears behind its siblings.
-这个方法将指定的视图移动到子视图属性中视图数组的起始。
+移动指定的子视图，使其显示在同级视图的后面。也就是移动到subviews数组的开始处。
 
 #### func removeFromSuperview()
-Unlinks the view from its superview and its window, and removes it from the responder chain.
+解除视图与父视图和窗口的链接，并从responder链中移除它。
+永远不要在视图的draw(_:)方法中调用这个方法。
+
 
 #### func insertSubview(UIView, at: Int)
-Inserts a subview at the specified index.
+子视图属性数组中要插入视图的索引。子视图索引从0开始，并且不能大于子视图的数量。
+这个方法建立了对视图的强引用，并将它的下一个响应器设置为接收方，即它的新父视图。
+视图只能有一个父视图。如果视图已经有一个父视图，而那个视图不是接收视图，这个方法会在接收视图成为它的新父视图之前移除之前的父视图
 
 #### func insertSubview(UIView, aboveSubview: UIView)
-Inserts a view above another view in the view hierarchy.
+在视图层次结构中，将一个视图插入到另一个视图之上。
 
 #### func insertSubview(UIView, belowSubview: UIView)
-Inserts a view below another view in the view hierarchy.
+在视图层次结构中，将视图插入到另一个视图之下。
 
 #### func exchangeSubview(at: Int, withSubviewAt: Int)
-Exchanges the subviews at the specified indices.
+在指定的索引处交换子视图。
+每个索引表示子视图属性中对应视图在数组中的位置。子视图索引从0开始，并且不能大于子视图的数量。这个方法不会改变任何一个视图的父视图，只是交换它们在子视图数组中的位置。
 
 #### func isDescendant(of: UIView) -> Bool
-Returns a Boolean value indicating whether the receiver is a subview of a given view or identical to that view.
+如果receiver是view的直接子视图或远程子视图，或者view是receiver本身，则为True;否则错误。
 
-### Observing View-Related Changes
-#### func didAddSubview(UIView)
+### 观察与视图相关的变化
+
+func didAddSubview(UIView)
 Tells the view that a subview was added.
+这个方法的默认实现什么也不做。当添加子视图时，子类可以覆盖它来执行额外的操作。当使用任何相关的视图方法添加子视图时，将调用此方法。
 
-#### func willRemoveSubview(UIView)
+
+func willRemoveSubview(UIView)
 Tells the view that a subview is about to be removed.
+告诉视图一个子视图将要被删除。
+这个方法的默认实现什么也不做。当子视图被删除时，子类可以覆盖它来执行额外的操作。当子视图的父视图改变或子视图从视图层次结构中完全删除时，调用此方法。
 
-#### func willMove(toSuperview: UIView?)
+func willMove(toSuperview: UIView?)
 Tells the view that its superview is about to change to the specified superview.
+告诉视图，它的父视图即将更改为指定的父视图。
+这个方法的默认实现什么也不做。子类可以在父视图改变时覆盖它来执行额外的操作。
 
-#### func didMoveToSuperview()
+func didMoveToSuperview()
 Tells the view that its superview changed.
+这个方法的默认实现什么也不做。子类可以在父视图改变时覆盖它来执行额外的操作。
 
-#### func willMove(toWindow: UIWindow?)
+func willMove(toWindow: UIWindow?)
 Tells the view that its window object is about to change.
+告诉视图它的窗口对象即将改变。
 
-#### func didMoveToWindow()
+func didMoveToWindow()
 Tells the view that its window object changed.
-
 
 ### Configuring Content Margins
 
@@ -391,6 +403,12 @@ var widthAnchor: NSLayoutDimension
 A layout anchor representing the width of the view’s frame.
 
 [详细解释](UIView属性详解/NSLayoutAnchor/NSLayoutAnchor详解%20-%20简书.pdf)
+**重要提示**
+NSLayoutAnchor添加约束注意事项
+1.要给添加约束的view要设置`translatesAutoresizingMaskIntoConstraints`为`false` 否则约束不生效 自定义view的时候也要给子view设置此属性，总之你要给哪个view设置Layout就要给哪个view设置此属性为false
+[translatesAutoresizingMaskIntoConstraints详解](UIView属性详解/NSLayoutAnchor/translatesAutoresizingMaskIntoConstraints%20详解%20-%20简书.pdf)
+2.active要设置为true 这个是控制约束是否真正添加的开关 设置为false的时候 约束失效
+
 
 ### Working with Layout Guides
 #### func addLayoutGuide(UILayoutGuide)
@@ -458,27 +476,118 @@ The natural size for the receiving view, considering only properties of the view
 `var intrinsicContentSize: CGSize { get }`
 接收视图的自然大小，仅考虑视图本身的属性。
 自定义视图通常具有布局系统不知道的内容。设置此属性允许自定义视图根据其内容向布局系统传达其希望的大小。这种内在大小必须独立于内容框架，例如,因为无法根据高度的变化动态地将宽度的变化传达给布局系统。
-如果一个自定义视图对于给定的维度没有内在大小，那么它可以对该维度使用`noIntrinsicmetric`。
+如果一个自定义视图对于给定的维度没有内在大小，那么它可以对该维度使`noIntrinsicmetric`。
 
 #### func invalidateIntrinsicContentSize()
 Invalidates the view’s intrinsic content size.
 使视图的内在内容大小无效。
 当自定义视图中发生更改，使其内在内容大小无效时调用此方法。这允许基于约束的布局系统在下一个布局过程中考虑新的内在内容大小。
 
+>解释1：
+`intrinsicContentSize`，也就是控件的内置大小。比如UILabel，UIButton等控件，他们都有自己的内置大小。控件的内置大小往往是由控件本身的内容所决定的，比如一个UILabel的文字很长，那么该UILabel的内置大小自然会很长。控件的内置大小可以通过UIView的`intrinsicContentSize`属性来获取内置大小，也可以通过`func invalidateIntrinsicContentSize()`方法来在下次UI规划事件中重新计算`intrinsicContentSize`。如果直接创建一个原始的UIView对象，显然它的内置大小为0。
+
+>解释2：
+`intrinsicContentSize`：固有大小。顾名思义，在AutoLayout中，它作为UIView的属性（不是语法上的属性），意思就是说我知道自己的大小，如果你没有为我指定大小，我就按照这个大小来。 比如：大家都知道在使用AutoLayout的时候，UILabel是不用指定尺寸大小的，只需指定位置即可，就是因为，只要确定了文字内容，字体等信息，它自己就能计算出大小来。
+
+>在代码中，UILabel，UIImageView，UIButton等控件都重写了UIView 中的 `-(CGSize)intrinsicContentSize:` 方法。 并且在需要改变这个值的时候调用：`func invalidateIntrinsicContentSize()` 方法，通知系统这个值改变了。
+所以当我们在编写继承自UIView的自定义组件时，也想要有Intrinsic Content Size的时候，就可以通过这种方法来轻松实现。
+
+
+
 #### func contentCompressionResistancePriority(for: NSLayoutConstraint.Axis) -> UILayoutPriority
-Returns the priority with which a view resists being made smaller than its intrinsic size.
 返回视图拒绝被设置为小于其固有大小的优先级。
 `func contentCompressionResistancePriority(for axis: NSLayoutConstraint.Axis) -> UILayoutPriority`
-
-返回值：视图在指定轴上抵抗从其固有尺寸被压缩的优先级。
-基于约束的布局系统在为视图确定最佳布局时使用这些优先级，这些视图遇到的约束要求它们小于其内在大小。
-子类不应该重写这个方法。相反，自定义视图应该在创建时为其内容设置默认值，通常为UILayoutPriorityDefaultLow或UILayoutPriorityDefaultHigh。
+**axis**
+The axis of the view that might be reduced.
+**返回值**：视图在指定轴上抵抗从其固有尺寸被压缩的优先级。
+子类不应该重写这个方法。相反，自定义视图应该在创建时为其内容设置默认值，通常为`UILayoutPriorityDefaultLow`或`UILayoutPriorityDefaultHigh`。
 
 #### func setContentCompressionResistancePriority(UILayoutPriority, for: NSLayoutConstraint.Axis)
-Sets the priority with which a view resists being made smaller than its intrinsic size.
+设置使视图不被设置为小于其固有大小的优先级。
+`func setContentCompressionResistancePriority(_ priority: UILayoutPriority, for axis: NSLayoutConstraint.Axis)`
+
+自定义视图应该在创建时根据它们的内容为这两个方向设置默认值，通常为UILayoutPriorityDefaultLow或UILayoutPriorityDefaultHigh。在创建用户界面时，当总体布局设计需要不同于界面中使用的视图的自然优先级时，布局设计者可以为特定视图修改这些优先级。
+子类不应该重写这个方法。
 
 #### func contentHuggingPriority(for: NSLayoutConstraint.Axis) -> UILayoutPriority
-Returns the priority with which a view resists being made larger than its intrinsic size.
+返回视图拒绝被设置为大于其固有大小的优先级。
 
 #### func setContentHuggingPriority(UILayoutPriority, for: NSLayoutConstraint.Axis)
-Sets the priority with which a view resists being made larger than its intrinsic size.
+设置使视图不被设置为大于其固有大小的优先级。
+
+自定义视图应该在创建时根据它们的内容为这两个方向设置默认值，通常为UILayoutPriorityDefaultLow或UILayoutPriorityDefaultHigh。在创建用户界面时，当总体布局设计需要不同于界面中使用的视图的自然优先级时，布局设计者可以为特定视图修改这些优先级。
+子类不应该重写这个方法。
+
+**重要文章：**
+[详解intrinsicContentSize 及 约束优先级／content Hugging／content Compression Resistance](UIView属性详解/intrinsicContentSize及约束优先级/只有20%的iOS程序员能看懂：详解intrinsicContentSize%20及%20约束优先级／content%20Hugging／content%20Compression%20Resistance_hard_m.pdf)
+
+### Aligning Views in Auto Layout
+
+#### func alignmentRect(forFrame: CGRect) -> CGRect
+Returns the view’s alignment rectangle for a given frame.
+`func alignmentRect(forFrame frame: CGRect) -> CGRect`
+**frame**
+需要其相应对齐矩形的框架。
+讨论
+基于约束的布局系统使用对齐矩形(alignment rect)来对齐视图，而不是它们的frame。这允许自定义视图根据其内容的位置对齐，同时仍然有一个frame，其中包含他们需要围绕其内容绘制的任何装饰，如阴影或反射。
+次方法的默认实现是返回由视图的alignmentRectInsets修改的视图frame。大多数自定义视图都可以使用alignmentRectInsets来指定其内容在frame中的位置。需要任意转换的自定义视图可以override `alignmentRect(forFrame:)`和`frame(forAlignmentRect:)`来描述其内容的位置。这两种方法必须始终是相反的。
+
+#### func frame(forAlignmentRect: CGRect) -> CGRect
+Returns the view’s frame for a given alignment rectangle.
+
+#### var alignmentRectInsets: UIEdgeInsets
+The insets from the view’s frame that define its alignment rectangle.
+这个属性的默认值是一个零值的UIEdgeInsets结构。自定义视图在其内容周围绘制装饰时应该使用此属性(返回与内容边缘对齐的插入:return insets that align with the edges of the content,)，不包括装饰。这允许基于约束的布局系统根据内容(而不仅仅是frame)对齐视图。
+如果自定义视图的内容位置不能用一组简单的insets来表示，那么它应该覆盖`alignmentRect(forFrame:)`和`frame(forAlignmentRect:)`来描述它们在对齐矩形和frame之间的自定义转换。
+
+[详细讲解自动布局/对齐矩形（1）](自动布局/对齐矩形(alignment%20rect)/iOS%20利用%20Autolayout%20实现%20view%20间隔自动调整%20-%20掘金.pdf)
+[详细讲解自动布局/对齐矩形（2）](自动布局/系统理解%20iOS%20自动布局%20|%20楚权的世界.pdf)
+
+#### var forFirstBaselineLayout: UIView
+Returns a view used to satisfy first baseline constraints.
+对于具有多行文本的视图，第一个基线是最上面一行的基线。
+当你对视图的NSLayoutConstraint.Attribute.firstBaseline属性做一个约束时，Auto Layout会使用这个方法返回的视图的基线。如果该视图没有基线，自动布局将使用视图的上边缘。
+重写此属性以返回基于文本的子视图(例如，UILabel或非滚动的UITextView)。返回的视图必须是接收方的子视图。默认实现返回forLastBaselineLayout包含的值。
+请注意
+如果相同的子视图适用于第一个和最后一个基线，你只需要重写forLastBaselineLayout getter方法。
+
+
+#### var forLastBaselineLayout: UIView
+Returns a view used to satisfy last baseline constraints.
+对于具有多行文本的视图，最后的基线是最下面一行的基线。
+当你对视图的NSLayoutConstraint.Attribute.lastBaseline属性进行约束时，Auto Layout会使用这个方法返回的视图基线。如果该视图没有基线，自动布局将使用视图的底部边缘。
+重写此属性以返回基于文本的子视图(例如，UILabel或非滚动的UITextView)。返回的视图必须是接收方的子视图。默认实现返回接收视图。
+
+AutoLayout中的baseline对齐:
+通常是对有文本显示功能的两个或者多个视图进行约束，NSLayoutAttributeLastBaseline 文本的最后一行、NSLayoutAttributeFirstBaseline文本的第一行，在UIView中有viewForFirstBaselineLayout、viewForLastBaselineLayout两个只读属性，在自定义的视图中，重写它们的getter方法返回某一子视图，然后就可以对这个自定义的视图使用baseline约束了。
+
+### Triggering Auto Layout 触发自动布局
+
+#### func needsUpdateConstraints() -> Bool
+A Boolean value that determines whether the view’s constraints need updating.
+一个布尔值，用于确定视图的约束是否需要更新。
+基于约束的布局系统使用这个方法的返回值来确定是否需要在视图上调用`updateConstraints()`作为常规布局传递的一部分。
+
+#### func setNeedsUpdateConstraints()
+Controls whether the view’s constraints need updating.
+当自定义视图的属性发生影响约束的变化时，可以调用此方法来指示约束需要在将来的某个时间点更新。然后，系统将调用updateConstraints()作为其常规布局传递的一部分。将此作为批量处理约束更改的优化工具。在需要更新约束之前一次性更新约束，可以确保在布局过程中对视图进行多次更改时，不必重新计算约束。
+
+#### func updateConstraints()
+Updates constraints for the view.
+**讨论**
+重写此方法以优化对约束的更改。
+**请注意**
+在有影响的更改发生后立即更新约束几乎总是更简洁和更容易。例如，如果您想要更改一个约束以响应按钮点击，可以直接在按钮的action方法中进行更改。
+只有在适当的约束更改太慢或视图产生大量冗余更改时，才应该重写此方法。
+要安排更改，请在视图上调用setNeedsUpdateConstraints()。然后，在布局发生之前，系统调用updateConstraints()的实现。这让您可以在自定义视图的属性没有改变时，验证内容的所有必要约束是否已经到位。
+您的实现必须尽可能高效。不要取消你所有的约束，然后重新激活你需要的。相反，应用程序必须有某种方式来跟踪约束，并在每次更新过程中验证它们。只更改需要更改的项。在每次更新过程中，必须确保对应用程序的当前状态有适当的约束。
+不要在你的实现中调用setNeedsUpdateConstraints()。调用setNeedsUpdateConstraints()计划另一个更新传递，创建一个反馈循环。
+**重要的**
+调用[super updateConstraints]作为实现的最后一步。
+
+#### func updateConstraintsIfNeeded()
+Updates the constraints for the receiving view and its subviews.
+更新接收视图及其子视图的约束。
+
+每当一个视图的新布局通过被触发时，系统调用这个方法来确保视图及其子视图的任何约束都被来自当前视图层次结构及其约束的信息更新。该方法由系统自动调用，但如果您需要检查最新的约束，则可以手动调用该方法。
+子类不应该重写这个方法。
