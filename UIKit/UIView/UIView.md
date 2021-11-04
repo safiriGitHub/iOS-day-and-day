@@ -591,3 +591,30 @@ Updates the constraints for the receiving view and its subviews.
 
 每当一个视图的新布局通过被触发时，系统调用这个方法来确保视图及其子视图的任何约束都被来自当前视图层次结构及其约束的信息更新。该方法由系统自动调用，但如果您需要检查最新的约束，则可以手动调用该方法。
 子类不应该重写这个方法。
+
+[Auto Layout 中的 setNeedsUpdateConstraints 和 layoutIfNeeded - 掘金](自动布局/自动布局流程/Auto%20Layout%20中的%20setNeedsUpdateConstraints%20和%20layoutIfNeeded%20-%20掘金.pdf)
+
+[关于ios：setNeedsLayout与setNeedsUpdateConstraints和layoutIfNeeded vs updateConstraintsIfNeeded | 码农家园](自动布局/自动布局流程/关于ios：setNeedsLayout与setNeedsUpdateConstraints和layoutIfNeeded%20vs%20updateConstraintsIfNeeded%20|%20码农家园.pdf)
+
+[iOS中AutoLayer自动布局流程及相关方法 - whj的个人空间 - OSCHINA - 中文开源技术交流社区](自动布局/自动布局流程/iOS中AutoLayer自动布局流程及相关方法%20-%20whj的个人空间%20-%20OSCHINA%20-%20中文开源技术交流社区.pdf)
+
+### Adjusting the User Interface
+
+#### var overrideUserInterfaceStyle: UIUserInterfaceStyle
+视图及其所有子视图所采用的用户界面样式。
+`var overrideUserInterfaceStyle: UIUserInterfaceStyle { get set }`
+使用此属性可强制视图始终采用亮或暗的界面样式。这个属性的默认值是`UIUserInterfaceStyle.unspecified`，它导致视图从父视图或视图控制器继承接口样式。
+如果你指定了一个不同的值，新的样式会应用到同一个视图控制器所拥有的视图和所有子视图。(如果视图层次结构包含嵌入子视图控制器的根视图，则子视图控制器及其视图不会继承接口样式。)
+如果视图是一个UIWindow对象，新的样式会应用到窗口中的所有东西，包括根视图控制器和所有呈现的内容。
+[iOS13简单适配 - 包含UIUserInterfaceStyle讲解及其适配](UIView属性详解/杂项/iOS13简单适配%20-%20简书.pdf)
+
+#### var semanticContentAttribute: UISemanticContentAttribute
+A semantic description of the view’s contents, used to determine whether the view should be flipped when switching between left-to-right and right-to-left layouts.
+
+
+#### var effectiveUserInterfaceLayoutDirection: UIUserInterfaceLayoutDirection
+The user interface layout direction appropriate for arranging the immediate content of the view.
+#### class func userInterfaceLayoutDirection(for: UISemanticContentAttribute) -> UIUserInterfaceLayoutDirection
+Returns the user interface direction for the given semantic content attribute.
+#### class func userInterfaceLayoutDirection(for: UISemanticContentAttribute, relativeTo: UIUserInterfaceLayoutDirection) -> UIUserInterfaceLayoutDirection
+Returns the layout direction implied by the specified semantic content attribute, relative to the specified layout direction.
