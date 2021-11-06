@@ -1,3 +1,4 @@
+# iOS国际化总结
 
 ## iOS国际化原理分析 TODO
 
@@ -16,14 +17,14 @@
 新建文件 `New File -> Strings File ，取名为Localizabel` 如下图所示
 ![](20211105162827.jpg)
 
-我们通过一个`Localizable.strings`文件来存储每个语言的文本，它是iOS默认加载的文件，如果想用自定义名称命名，在使用`NSLocalizedString`方法时指定tableName为自定义名称就好了，但你的应用规模不是很大就不要分模块搞特殊了。
+我们通过一个`Localizable.strings`文件来存储每个语言的文本，它是iOS默认加载的文件，如果想用自定义名称命名，在使用`NSLocalizedString`方法时指定`tableName`为自定义名称就好了，但你的应用规模不是很大就不要分模块搞特殊了。
 
 每个资源文件如果想为一种语言添加支持，通过其属性面板中的`Localization`添加相应语言就行了，此时`Localizable.strings`处于可展开状态，子级有着相应语言的副本。我们把相应语言的文本放在副本里面就行了
 
 
 >此处Base与前面提过到的开启`Use Base Internationalization`是有关联的，只有开启了全局`Use Base Internationalization`此处才会显示。那为什么这里没有勾选Base？Base做为一个基础模板，作用于Strings文件是没有太大意义的，另外去掉Base意义着在Base.lproj中少了一个strings文件，APP大小也所有下降，这点对于图片的Base更是如此 **Xcode13.1中已经无此选项, 已经废弃？**
 
-**文件内容举例**
+**文件举例**
 
 ![](20211105165617.jpg)
 ![](20211105165608.jpg)
@@ -38,16 +39,16 @@ NSLocalizedString("我",comment: "")
 
 ## 图片的国际化
 
-方案一 利用Localizable.strings自定义文本
+### 方案一 利用Localizable.strings自定义文本
 
 代码：`UIImage(named: NSLocalizedString("search_logo",comment: ""))`
 
-方案二 Assets 支持国际化
+### 方案二 Assets 支持国际化
 选中`Image Set` 点击 `Localize...` 选择支持的语言，如下图
 ![](20211105170256.jpg)
 
 
-## Storyboard 、Xib 国际化  未测试
+## Storyboard国际化 (未亲自测试)
 
 前面的两种资源国际化比较简单，但Storyboard国际化就稍微麻烦了点。同样它也有二种方案
 
@@ -70,17 +71,19 @@ NSLocalizedString("我",comment: "")
 
 ## xib国际化配置
 
-[详细代码见i18n-Demo](i18n-Demo/i18n-Demo.xcodeproj/project.pbxproj)
+### 方案一 - 每种语言定制一套xib 
 
-**方案一 - 每种语言定制一种xib**
-        xib 国际化：
-        // 此示例都选择Interface Builder CocoaTouch Xib 选项
-        // 中文下显示中文xib的内容
-        // 英文下显示英文xib的内容
-        // 这样的话是维护两套xib的内容
+xib 国际化：
+        此示例都选择Interface Builder CocoaTouch Xib 选项
+        中文下显示中文xib的内容
+        英文下显示英文xib的内容
+        这样的话是维护两套xib的内容
+
 
 如图：
-![](WX20211106-094318@2x.png) ![](WX20211106-094345@2x.png)
+
+![](WX20211106-094318@2x.png) 
+![](WX20211106-094345@2x.png)
 
 代码：
 ```swift
@@ -116,10 +119,12 @@ override func viewDidLoad() {
     }
 ```
 
-**方案二 **
-![](WX20211106-111451@2x.png) ![](WX20211106-111502@2x.png)
+### 方案二 
 
-xib国际化示例2
+![](WX20211106-111451@2x.png) 
+![](WX20211106-111502@2x.png)
+
+方案二xib国际化示例
 
         /// localization 选择 Base  
         English:Localizable Strings 
@@ -154,16 +159,18 @@ strings-ch
 ```
 ![](WX20211106-113202@2x.png)
 
-## 应用内语言切换
+[详细代码见i18n-Demo](i18n-Demo/)
+
+## 应用内实现语言实时切换国际化
 
 应用启动时，首先会读取`NSUserDefaults`中的`key`为`AppleLanguages`的内容，该key返回一个String数组，存储着APP支持的语言列表，数组的第一项为APP当前默认的语言。
 
-在安装后第一次打开APP时，会自动初始化该key为当前系统的语言编码，如简体中文就是zh-Hans。
+在安装后第一次打开APP时，会自动初始化该key为当前系统的语言编码，如简体中文就是`"zh-Hans"`。
 
 ```
 //获取APP当前语言
 guard let language = (UserDefaults.standard.object(forKey: kUserLanguage) as? [String])?.first else {
-    assert(true, "未知错误，获取APP语言失败")
+    assert(false, "未知错误，获取APP语言失败")
     return
 }
 ```
@@ -178,11 +185,55 @@ UserDefaults.standard.setValue(["zh-Hans"], forKey: kUserLanguage)
 
 其实，APP中的资源加载（Storyboard、图片、字符串）都是在`NSBundle.mainBundle()`上操作的，那么我们只要在语言切换后把`NSBundle.mainBundle()`替换成当前语言的bundle就行了，这样系统通过`NSBundle.mainBundle()`去加载资源时实则是加载的当前语言bundle中的资源
 
-具体实现代码见[i18n-Demo]()
+```
+//
+//  NSBundle+Language.swift
+//  i18n-Demo
+//
+//  Created by safiri on 2021/11/6.
+//
+
+import Foundation
+
+/**
+ *  当调用onLanguage后替换掉mainBundle为当前语言的bundle
+ */
+class BundleEx: Bundle {
+    
+    override func localizedString(forKey key: String, value: String?, table tableName: String?) -> String {
+        if let bundle = languageBundle() {
+            return bundle.localizedString(forKey: key, value: value, table: tableName)
+        } else {
+            return super.localizedString(forKey: key, value: value, table: tableName)
+        }
+    }
+}
+
+extension Bundle {
+    
+    //代替dispatch_once
+    private static var onLanguageDispatchOnce: ()->Void = {
+        object_setClass(Bundle.main, BundleEx.self)
+    }
+    
+    func onLanguage() {
+        //替换NSBundle.mainBundle()的class为自定义的BundleEx，这样一来我们就可以重写方法
+        Bundle.onLanguageDispatchOnce()
+    }
+    
+    //当前语言的bundle
+    func languageBundle() -> Bundle? {
+        return Languager.sharedInstance.currentLanguageBundle
+    }
+}
+
+```
+[详细代码见i18n-Demo](i18n-Demo/)
 
 ## LaunchScreen.xib的国际化
 xcode13已支持
 
+[参考-详述iOS国际化](http://www.cocoachina.com/articles/14258)
 ## 增加
 
 #### 关于 NSLocalizedString 方法的解释

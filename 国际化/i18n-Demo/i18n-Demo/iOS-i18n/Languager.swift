@@ -21,7 +21,7 @@ class Languager {
     // 初始化配置
     func initLanguages() {
         guard let language = (UserDefaults.standard.object(forKey: kUserLanguage) as? [String])?.first else {
-            assert(true, "未知错误，获取APP语言失败")
+            assert(false, "未知错误，获取APP语言失败")
             return
         }
         if let path = Bundle.main.path(forResource: language, ofType: "lproj"),
@@ -35,7 +35,7 @@ class Languager {
                 self.currentLanguage = l
                 print("Languager:\(language)不支持，切换成默认语言\(self._currentLanguage!)")
             }else {
-                assert(true, "未知错误，获取APP语言失败")
+                assert(false, "未知错误，获取APP语言失败")
             }
         }
     }
@@ -64,7 +64,7 @@ class Languager {
                     _currentLanguage = defaultLanguage
                     currentLanguageBundle = bundle
                 }else {
-                    assert(true, "未知错误，获取APP语言失败")
+                    assert(false, "未知错误，获取APP语言失败")
                 }
             }
             UserDefaults.standard.setValue([_currentLanguage!], forKey: kUserLanguage)

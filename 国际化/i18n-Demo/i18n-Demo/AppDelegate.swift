@@ -20,6 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let mainSb = UIStoryboard(name: "Main", bundle: nil)
         let rootViewC = mainSb.instantiateInitialViewController() as! UINavigationController
         window?.rootViewController = rootViewC
+        
         return true
     }
 
