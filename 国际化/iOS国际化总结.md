@@ -68,7 +68,121 @@ NSLocalizedString("我",comment: "")
 但是ibtool生成的strings文件是BaseStoryboard的strings(默认语言的strings)，且会把我们原来的strings替换掉。所以我们要做的就是把新生成的strings与旧的strings进行冲突处理(新的附加上，删除掉的注释掉)，这一切可以用这个pythoy脚本来实现，见[AutoGenStrings.py](https://raw.githubusercontent.com/mokai/iOS-i18n/master/i18n/RunScript/AutoGenStrings.py)。然后我们将借助Xcode 中 Run Script来运行这段脚本。这样每次Build时都会保证语言strings与Base Storyboard保持一致。
 ![](http://api.cocoachina.com/uploads/20151117/1447754312265308.png)
 
+## xib国际化配置
+
+[详细代码见i18n-Demo](i18n-Demo/i18n-Demo.xcodeproj/project.pbxproj)
+
+**方案一 - 每种语言定制一种xib**
+        xib 国际化：
+        // 此示例都选择Interface Builder CocoaTouch Xib 选项
+        // 中文下显示中文xib的内容
+        // 英文下显示英文xib的内容
+        // 这样的话是维护两套xib的内容
+
+如图：
+![](WX20211106-094318@2x.png) ![](WX20211106-094345@2x.png)
+
+代码：
+```swift
+override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // Do any additional setup after loading the view.
+        
+        // xib 国际化：
+        // 此示例都选择Interface Builder CocoaTouch Xib 选项
+        // 中文下显示中文xib的内容
+        // 英文下显示英文xib的内容
+        // 这样的话是维护两套xib的内容
+        
+        // 还可以用代码进行分类配置
+        //获取APP的语言数组
+        //let appLanguages = UserDefaults.standard.object(forKey: "AppleLanguages")
+        if let appLanguages = UserDefaults.standard.object(forKey: "AppleLanguages") as? [String], let languageName = appLanguages.first {
+            
+            if languageName == "zh-Hans-US" {
+                chTestLabel.text = "全世界都在说中国话"
+            } else if languageName == "en" {
+                enTestLabel.text = "what??"
+                enTestLabel2.text = "english is hard"
+            }
+        }
+        
+        //ex
+        //获取当前设备支持的所有语言
+        // 获取当前设备支持语言数组
+        let arr = NSLocale.availableLocaleIdentifiers
+        print(arr) //很多
+    }
+```
+
+**方案二 **
+![](WX20211106-111451@2x.png) ![](WX20211106-111502@2x.png)
+
+xib国际化示例2
+
+        /// localization 选择 Base  
+        English:Localizable Strings 
+        Chinese: Localizable Strings
+        /// xib只添加label，在strings文件中会生成相对于的配置文字代码
+        /// 如：
+        /// ```
+        /// /* Class = "UILabel"; text = "Label"; ObjectID = "Ima-pm-Edd"; */
+        /// "Ima-pm-Edd.text" = "我为你做了一切";
+        /// ```
+        /// 在其他语言文件中同样进行配置，就可实现国际化
+        /// ```
+        /// /* Class = "UILabel"; text = "Label"; ObjectID = "Ima-pm-Edd"; */
+        /// "Ima-pm-Edd.text" = "i do everything for everything for you";
+        /// ```
+        /// 在对应的viewcontroller文件中，可对label进行设置
+        /// `testLabel.text = NSLocalizedString("Year", comment: "")`
+        ///
+
+strings-en     
+```
+/* Class = "UILabel"; text = "Label"; ObjectID = "Ima-pm-Edd"; */
+"Ima-pm-Edd.text" = "i do everything for everything for you";
+"OId-wY-9E7.text" = "i like oo";
+```
+
+strings-ch
+```
+/* Class = "UILabel"; text = "Label"; ObjectID = "Ima-pm-Edd"; */
+"Ima-pm-Edd.text" = "我为你做了一切";
+"OId-wY-9E7.text" = "我喜欢";
+```
+![](WX20211106-113202@2x.png)
+
 ## 应用内语言切换
+
+应用启动时，首先会读取`NSUserDefaults`中的`key`为`AppleLanguages`的内容，该key返回一个String数组，存储着APP支持的语言列表，数组的第一项为APP当前默认的语言。
+
+在安装后第一次打开APP时，会自动初始化该key为当前系统的语言编码，如简体中文就是zh-Hans。
+
+```
+//获取APP当前语言
+guard let language = (UserDefaults.standard.object(forKey: kUserLanguage) as? [String])?.first else {
+    assert(true, "未知错误，获取APP语言失败")
+    return
+}
+```
+那么我们要实现语言切换改变`AppleLanguages`的值即可，但是这里有一个坑，因为苹果没提供给我们直接修改APP默认语言的API，我们只能通过`NSUserDefaults`手动去操作，且`AppleLanguages`的值改变后APP得重新启动后才会生效（才会读取相应语言的lproj中的资源，意义着就算你改了，资源还是加载的APP启动时lproj中的资源），猜测应该是框架层在第一次加载时对`AppleLanguages`的值进行了内存缓冲.
+
+```
+//设置APP当前语言
+UserDefaults.standard.setValue(["zh-Hans"], forKey: kUserLanguage)
+```
+
+那么问题来了，如何做到改变AppleLanguages的值就加载相应语言的lproj资源？
+
+其实，APP中的资源加载（Storyboard、图片、字符串）都是在`NSBundle.mainBundle()`上操作的，那么我们只要在语言切换后把`NSBundle.mainBundle()`替换成当前语言的bundle就行了，这样系统通过`NSBundle.mainBundle()`去加载资源时实则是加载的当前语言bundle中的资源
+
+具体实现代码见[i18n-Demo]()
+
+## LaunchScreen.xib的国际化
+xcode13已支持
+
 ## 增加
 
 #### 关于 NSLocalizedString 方法的解释

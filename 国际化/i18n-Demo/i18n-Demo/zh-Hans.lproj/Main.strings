@@ -1,0 +1,21 @@
+
+/* Class = "UIButton"; configuration.title = "Button"; ObjectID = "G6P-xo-FYb"; */
+"G6P-xo-FYb.configuration.title" = "xib国际化1";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "G6P-xo-FYb"; */
+"G6P-xo-FYb.normalTitle" = "xib国际化1";
+
+/* Class = "UIButton"; configuration.title = "Button"; ObjectID = "MLM-1m-xQf"; */
+"MLM-1m-xQf.configuration.title" = "文字国际化示例1";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "MLM-1m-xQf"; */
+"MLM-1m-xQf.normalTitle" = "文字国际化";
+
+/* Class = "UIButton"; configuration.title = "Button"; ObjectID = "U47-Dz-Rdi"; */
+"U47-Dz-Rdi.configuration.title" = "xib国际化2";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "U47-Dz-Rdi"; */
+"U47-Dz-Rdi.normalTitle" = "xib国际化2";
+
+/*切换语言按钮*/
+"coL-Gj-Qtf.configuration.title" = "APP内切换语言";

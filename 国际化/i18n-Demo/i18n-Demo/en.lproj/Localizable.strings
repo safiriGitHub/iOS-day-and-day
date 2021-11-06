@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  i18n-Demo
+
+  Created by safiri on 2021/11/6.
+  
+*/
+"首页"="home";
+"取消"="cancel";
+"切换"="change";
