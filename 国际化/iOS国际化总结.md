@@ -1,5 +1,5 @@
 # iOS国际化总结
-
+推荐文章 [iOS语言国际化/本地化-实践总结](https://www.jianshu.com/p/ed249bd3473b)
 ## iOS国际化原理分析 TODO
 
 ## 配置语言
