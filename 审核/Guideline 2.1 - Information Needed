@@ -1,0 +1,35 @@
+尊敬的审查委员会您好：
+
+- Does your app collect face data?
+    人脸识别功能由第三方旷视SDK提供，人脸数据信息由旷视根据法律规定管理，本APP只使用识别结果
+
+- What face data is your app collecting?
+    人脸识别与用户上传的身份证件是否为同一人的数据
+
+- For what purposes are you collecting this information? Please provide a complete and clear explanation of all planned uses of this data.
+    我们收集面部特征信息，这些信息将被用来对您的承运资质、信用进行审核，帮助我们做好风险管理工作。如果不提供上述信息，我们则无法对您的承运资质、信用进行评估并决定是否向您委派运单。
+    我们需要与人脸识别供应商共享您的面部识别特征及姓名、身份证号，以识别您是否本人使用服务
+
+- Will the data be shared with any third parties? Where will this information be stored?
+     人脸识别功能由第三方旷视SDK提供，会与旷视SDK第三方（北京旷视科技有限公司）共享数据，信息由旷视根据法律规定进行管理，本APP只使用和存储识别结果信息
+
+- Which are the relevant sections of your privacy policy that explain collection, use, disclosure, sharing, and retention of face data? 
+- Please quote the specific text from your privacy policy concerning face data.
+    
+    隐私政策地址 https://platform.yunshun56.com/privacyPolicy.html
+    其中含有面部数据的具体文本为：
+
+设备权限的调用
+    ③ 允许访问相机
+    因您在注册用户时需要进行人脸识别，以及在完善个人信息时需拍照上传个人头像、身份证件正反面、车辆照片、驾驶证、行驶证、客户回单、保险单、运输从业资格证等资料、为了便于您方便使用，您在使用软件过程中我们会询问您是否同意开启允许访问，您在不使用软件时亦可自主关闭相应的权限授权。
+
+我们如何存储和保护您的个人信息
+    ④供应商、服务提供商或其他合作伙伴。我们可能会将您的个人信息共享给支持我们功能的第三方，包括为我们提供基础设施技术服务、实名验证服务及其他按身份验证服务、人脸识别服务、短信运营商、支付服务、电子签名认证机构、提供位置处理数据服务的供应商、数据处理服务的第三方等。我们共享这些信息的目的是为了实现产品及服务的功能，比如我们需要将您的姓名和身份证号共享给实名验证服务供应商，以进行实名验证；或者我们需要与人脸识别供应商共享您的面部识别特征及姓名、身份证号，以识别您是否本人使用服务；或者我们需要将您的订单号和订单金额与第三方支付机构共享已实现其确认您的支付指令并完成支付等。我们会对第三方面进行严格的安全检测并约定数据保护措施。
+
+查看接入第三方SDK目录
+    旷视人脸识别
+    SDK类型：安全隐私类
+    SDK描述：基于人脸识别的金融级KYC验证服务
+    SDK使用业务场景：司机到货签收前
+    SDK所需用户信息字段：相机、手机状态信息、手机号
+    SDK使用目的、理由：实名认证

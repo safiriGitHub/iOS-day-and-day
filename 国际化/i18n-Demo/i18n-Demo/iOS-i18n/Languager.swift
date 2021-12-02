@@ -104,6 +104,7 @@ extension Languager {
         if let str = self.currentLanguageBundle?.localizedString(forKey: key, value: nil, table: tableName) {
             return str
         }
+       
         return key
     }
 }
