@@ -333,7 +333,6 @@ viewDidLayoutSubviews
 viewDidLayoutSubviews
 layoutSubviews
 draw (0.0, 0.0, 100.0, 100.0)
-打印了两遍。。。为何？
 ```
 
 push进入新页面，打印
@@ -357,3 +356,73 @@ didMoveToWindow
 viewDidAppear
 
 ```
+
+## 理解一
+
+1.在创建一个View时，第一步是通过init方法初始化UIView对象：
+```
+public init(frame: CGRect)
+public init?(coder aDecoder: NSCoder)
+```
+2.然后通过self.view.addSubView()，把新创建的View添加到UIViewController的根视图上，这时被添加的View就会调用以下方法，来管理UIView之间，以及UIView和UIWindow之间的关系：
+```
+open func willMove(toSuperview newSuperview: UIView?)
+
+open func didMoveToSuperview()
+
+open func willMove(toWindow newWindow: UIWindow?)
+
+open func didMoveToWindow()
+```
+3.UIWindow本身也是UIView，它的subviews包含了UIView，各个UIView之间的关系（View树）也已经建立，接下来就需要根据UIWindow的相关属性来对子UIView进行布局管理：
+```
+open func setNeedsLayout()
+
+open func layoutIfNeeded()
+
+open func layoutSubviews()
+
+```
+这个过程可以确定所有View的位置和大小信息，接下来就是真正的绘制：
+
+4.draw方法是自定义UIView时几乎必定重写的方法，在这个方法内完成对视图的绘制工作。
+```
+open func draw(_ rect: CGRect)
+
+open func setNeedsDisplay()
+
+open func setNeedsDisplay(_ rect: CGRect)
+
+```
+
+**总的来说**，一个UIView显示到屏幕上经历了三个过程：
+
+创建并建立关系：`init和addSubView`
+
+布局：`layout`
+
+绘制：`draw`
+
+
+## 理解二 View Hierarchy
+https://rimson.top/ios-view-2/
+
+[本地pdf文件](../UIView/UIView绘制/iOS%20UIView绘制（二）View%20Hierarchy%20|%20Rimson's%20Blog.pdf)
+
+摘要：
+
+1、实际上`UIViewController`和`UIView`的关系，都是通过`UIViewController`的根视图，也就是我们常用的`self.view`关联起来的。`UIViewController`持有根视图，根视图又管理者所有子视图。除了响应链，一个`UIView`对于它所在的`UIViewController`是没有感知的。
+2、
+![](https://blog-1256739480.cos.ap-guangzhou.myqcloud.com/20190825103553.png)
+
+![](https://blog-1256739480.cos.ap-guangzhou.myqcloud.com/20190825154516.png)
+
+
+
+## 理解三
+怎么理解 setNeedsDisplay 、setNeedsLayout 、 layoutIfNeeded 、 layoutSubviews...
+
+[UIView绘制 从Layout到Display](https://rimson.top/ios-view-3/#valine-comments) 解释的很好
+
+[本地pdf文件](../UIView/UIView绘制/iOS%20UIView绘制（三）从Layout到Display%20|%20Rimson's%20Blog.pdf)
+
