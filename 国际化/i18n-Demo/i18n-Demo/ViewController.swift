@@ -7,11 +7,6 @@
 
 import UIKit
 
-let APPLanguages = [
-    "中文" : "zh-Hans",
-    "English" :"en"
-]
-
 class ViewController: UIViewController {
 
     @IBOutlet weak var texti18nButton: UIButton!

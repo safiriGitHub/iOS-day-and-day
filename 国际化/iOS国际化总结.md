@@ -1,5 +1,17 @@
 # iOS国际化总结
 推荐文章 [iOS语言国际化/本地化-实践总结](https://www.jianshu.com/p/ed249bd3473b)
+[App的国际化和本地化（一） —— 简单介绍（一）](https://www.jianshu.com/p/15a8a968b5c4)
+[App的国际化和本地化（二） —— 查看语言和区域设置（一）](https://www.jianshu.com/p/bcb2ae2aa1c3)
+[App的国际化和本地化（三） —— 国际化用户界面（一）](https://www.jianshu.com/p/427778f9cfb3)
+[App的国际化和本地化（四） —— 国际化代码（一）](https://www.jianshu.com/p/3e087fcbeab2)
+[App的国际化和本地化（五） —— 使用区域设置格式化数据（一）简书正在审核]()
+[App的国际化和本地化（六） —— 支持从右到左的语言（一）](https://www.jianshu.com/p/89deaa97ed9a)
+[App的国际化和本地化（七） —— 本地化你的App（一）](https://www.jianshu.com/p/98e66c3c8572)
+[App的国际化和本地化（八） —— 测试您的国际化应用程序（一）](https://www.jianshu.com/p/5f881fe5af45)
+[App的国际化和本地化（九） —— 自己管理字符串文件（一）](https://www.jianshu.com/p/61b07f6da673)
+[App的国际化和本地化（十） —— 语言和区域ID（一）](https://www.jianshu.com/p/9c049cf32f4b)
+[App的国际化和本地化（十一） —— Stringsdict文件格式（一）](https://www.jianshu.com/p/a271347324de)
+
 ## iOS国际化原理分析 TODO
 
 ## 配置语言

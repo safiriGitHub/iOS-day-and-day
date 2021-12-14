@@ -20,9 +20,18 @@ class Languager {
     
     // 初始化配置
     func initLanguages() {
-        guard let language = (UserDefaults.standard.object(forKey: kUserLanguage) as? [String])?.first else {
+        guard var language = (UserDefaults.standard.object(forKey: kUserLanguage) as? [String])?.first else {
             assert(false, "未知错误，获取APP语言失败")
             return
+        }
+        /// iOS13 bug:
+        /// Languager:zh-Hans-CN不支持，切换成默认语言en
+        /// 因为设置简体中文后 项目里还是zh-Hans.lproj文件夹，
+        /// 而通过UserDefaults获取的首选语言是zh-Hans-CN（在模拟器中是zh-Hans，或者其他iOS系统也是）
+        /// 所以这里获取bundle获取不到，故而默认切换成了默认语言en
+        /// 先加下面代码解决bug
+        if language == "zh-Hans-CN" {
+            language = "zh-Hans"
         }
         if let path = Bundle.main.path(forResource: language, ofType: "lproj"),
             let bundle = Bundle(path: path) {
@@ -31,6 +40,7 @@ class Languager {
         }else {
             // 当前语言无法加载--不支持
             // 则加载info中Localization native development region中的值的lporj,设置为当前语言
+            
             if let l = Bundle.main.infoDictionary?[kCFBundleDevelopmentRegionKey as String] as? String {
                 self.currentLanguage = l
                 print("Languager:\(language)不支持，切换成默认语言\(self._currentLanguage!)")
@@ -104,14 +114,42 @@ extension Languager {
         if let str = self.currentLanguageBundle?.localizedString(forKey: key, value: nil, table: tableName) {
             return str
         }
-       
         return key
+    }
+    
+    static func LocalizedAPP(_ key: String) -> String {
+        return Languager.sharedInstance.string(key, table: nil)
+    }
+    static func LocalizedAPP(_ key: String, table tableName: String? = nil) -> String {
+        return Languager.sharedInstance.string(key, table: tableName)
+    }
+    
+    static func languageString() -> String {
+        let l = Languager.sharedInstance.currentLanguage
+        if l.contains("zh", caseSensitive: false) {
+            return "zh"
+        }else if l.contains("en", caseSensitive: false) {
+            return "en"
+        }
+        return "en"
+    }
+    static func languageType() -> LanguagerType {
+        let l = Languager.sharedInstance.currentLanguage
+        if l.contains("zh", caseSensitive: false) {
+            return .zh
+        }else if l.contains("en", caseSensitive: false) {
+            return .en
+        }
+        return .en
     }
 }
 
-func LocalizedAPP(_ key: String) -> String {
-    return Languager.sharedInstance.string(key, table: nil)
+enum LanguagerType {
+    case zh, en
 }
-func LocalizedAPP(_ key: String, table tableName: String? = nil) -> String {
-    return Languager.sharedInstance.string(key, table: tableName)
-}
+
+//切换语言相关
+let APPLanguages = [
+    "中文" : "zh-Hans",
+    "English" :"en"
+]

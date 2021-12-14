@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Network
 
 /**
  *  当调用onLanguage后替换掉mainBundle为当前语言的bundle
@@ -36,5 +37,17 @@ extension Bundle {
     //当前语言的bundle
     func languageBundle() -> Bundle? {
         return Languager.sharedInstance.currentLanguageBundle
+    }
+}
+
+extension String {
+    var loca: String {
+        return NSLocalizedString(self, comment: "")
+    }
+}
+
+extension Array where Element == String {
+    func loca() -> [String] {
+        return self.map { NSLocalizedString($0, comment: "") }
     }
 }

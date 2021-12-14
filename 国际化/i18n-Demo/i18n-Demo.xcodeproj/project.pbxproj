@@ -20,7 +20,7 @@
 		5BA0FE1227363A8300FDFA69 /* TestGjh2ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA0FE1027363A8300FDFA69 /* TestGjh2ViewController.swift */; };
 		5BA0FE1327363AAB00FDFA69 /* TestGjh2ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5BA0FE1527363AAB00FDFA69 /* TestGjh2ViewController.xib */; };
 		5BA0FE1C2736547800FDFA69 /* Languager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA0FE1B2736547800FDFA69 /* Languager.swift */; };
-		5BA0FE1E27366F9800FDFA69 /* NSBundle+Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA0FE1D27366F9800FDFA69 /* NSBundle+Language.swift */; };
+		5BA0FE1E27366F9800FDFA69 /* LanguagerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA0FE1D27366F9800FDFA69 /* LanguagerExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,7 +48,7 @@
 		5BA0FE1727363AAF00FDFA69 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/TestGjh2ViewController.strings; sourceTree = "<group>"; };
 		5BA0FE1927363AB100FDFA69 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/TestGjh2ViewController.strings"; sourceTree = "<group>"; };
 		5BA0FE1B2736547800FDFA69 /* Languager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Languager.swift; sourceTree = "<group>"; };
-		5BA0FE1D27366F9800FDFA69 /* NSBundle+Language.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSBundle+Language.swift"; sourceTree = "<group>"; };
+		5BA0FE1D27366F9800FDFA69 /* LanguagerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguagerExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,7 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				5BA0FE1B2736547800FDFA69 /* Languager.swift */,
-				5BA0FE1D27366F9800FDFA69 /* NSBundle+Language.swift */,
+				5BA0FE1D27366F9800FDFA69 /* LanguagerExtension.swift */,
 			);
 			path = "iOS-i18n";
 			sourceTree = "<group>";
@@ -184,7 +184,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BA0FE1E27366F9800FDFA69 /* NSBundle+Language.swift in Sources */,
+				5BA0FE1E27366F9800FDFA69 /* LanguagerExtension.swift in Sources */,
 				5BA0FDE527357F0300FDFA69 /* ViewController.swift in Sources */,
 				5BA0FE1227363A8300FDFA69 /* TestGjh2ViewController.swift in Sources */,
 				5BA0FDE127357F0300FDFA69 /* AppDelegate.swift in Sources */,

@@ -66,28 +66,36 @@
     
 
 - Drawing and printing:
-  - draw(_:) - 如果视图绘制自定义内容，请实现此方法。如果您的视图没有进行任何自定义绘图，请避免重写此方法。
+  - `draw(_:)` - 如果视图绘制自定义内容，请实现此方法。如果您的视图没有进行任何自定义绘图，请避免重写此方法。
   
   ```swift
   func draw(_ rect: CGRect)
 
   参数 rect:
-  需要更新的视图边界的部分。第一次绘制视图时，这个矩形通常是视图的整个可见边界。然而，在随后的绘图操作中，矩形可能只指定视图的一部分。
+  需要更新的视图边界的部分。第一次绘制视图时，这个矩形通常是视图的整个可见边界。
+  然而，在随后的绘图操作中，矩形可能只指定视图的一部分。
 
   这个方法的默认实现什么也不做。
-  使用Core Graphics和UIKit等技术来绘制视图内容的子类应该覆盖这个方法并在那里实现它们的绘制代码。如果视图以其他方式设置其内容，则不需要重写此方法。例如，如果你的视图只是显示一个背景颜色，或者你的视图直接使用底层对象设置它的内容，你就不需要重写这个方法。
+  使用Core Graphics和UIKit等技术来绘制视图内容的子类应该覆盖这个方法并在那里实现它们的绘制代码。
+  如果视图以其他方式设置其内容，则不需要重写此方法。例如，如果你的视图只是显示一个背景颜色，
+  或者你的视图直接使用底层对象设置它的内容，你就不需要重写这个方法。
   
-  当这个方法被调用时，UIKit已经为你的视图配置了适当的绘图环境，你可以简单地调用任何你需要渲染你的内容的绘图方法和函数。具体来说，UIKit创建并配置一个用于绘图的图形上下文，并调整该上下文的转换，使其原点与视图边界矩形的原点匹配。您可以使用`UIGraphicsGetCurrentContext()`函数获得对图形上下文的引用，但不要建立对图形上下文的强引用，因为它可以在调用`draw(_:)`方法之间更改。
+  当这个方法被调用时，UIKit已经为你的视图配置了适当的绘图环境，你可以简单地调用任何你需要渲染你的内容的绘图方法和函数。
+  具体来说，UIKit创建并配置一个用于绘图的图形上下文，并调整该上下文的转换，使其原点与视图边界矩形的原点匹配。
+  您可以使用`UIGraphicsGetCurrentContext()`函数获得对图形上下文的引用，但不要建立对图形上下文的强引用，因为它可以在调用`draw(_:)`方法之间更改。
 
   同样,如果使用OpenGL ES和GLKView类绘制,GLKit会在配置底层OpenGL ES上下文之前调用该方法(or the glkView(_:drawIn:) method of your GLKView delegate), so you can simply issue whatever OpenGL ES commands you need to render your content. For more information about how to draw using OpenGL ES, see OpenGL ES Programming Guide.
 
-  您应该将任何绘图限制在rect参数中指定的矩形内。另外，如果视图的isOpaque属性设置为true，你的draw(_:)方法必须完全用不透明的内容填充指定的矩形。
-    如果你直接子类化UIView，这个方法的实现不需要调用super。但是，如果你在子类化一个不同的视图类，你应该在实现的某个点调用super。
-    当视图首次显示或发生使视图可见部分失效的事件时，将调用此方法。你不应该直接调用这个方法。要使视图的一部分无效，并因此导致该部分被重绘，请调用setNeedsDisplay()或setNeedsDisplay(_:)方法。
+  您应该将任何绘图限制在rect参数中指定的矩形内。
+  另外，如果视图的isOpaque属性设置为true，你的draw(_:)方法必须完全用不透明的内容填充指定的矩形。
+  
+  如果你直接子类化UIView，这个方法的实现不需要调用super。但是，如果你在子类化一个不同的视图类，你应该在实现的某个点调用super。
+  
+  当视图首次显示或发生使视图可见部分失效的事件时，将调用此方法。你不应该直接调用这个方法。要使视图的一部分无效，并因此导致该部分被重绘，请调用setNeedsDisplay()或setNeedsDisplay(_:)方法。
 
     ```
 
-  - draw(_:for:) - Implement this method only if you want to draw your view’s content differently during printing.只有当您希望在打印过程中以不同的方式绘制视图内容时，才需要实现此方法。
+  - `draw(_:for:)` - Implement this method only if you want to draw your view’s content differently during printing.只有当您希望在打印过程中以不同的方式绘制视图内容时，才需要实现此方法。
     ```swift
     func draw(_ rect: CGRect, 
       for formatter: UIViewPrintFormatter)
@@ -112,7 +120,7 @@
 
 许多视图行为可以在不需要子类化的情况下配置。在开始覆盖方法之前，请考虑修改以下属性或行为是否可以提供您需要的行为。
 
-- **addConstraint(_:)** 
+- **addConstraint(_: )** 
 - **autoresizingMask** - Provides automatic layout behavior when the superview’s frame changes. These behaviors can be combined with constraints.
 - **contentMode** - Provides layout behavior for the view’s content, as opposed to the frame of the view. This property also affects how the content is scaled to fit the view and whether it is cached or redrawn.
 - **isHidden or alpha** - 
@@ -144,7 +152,7 @@
 
 `var tintColor: UIColor!`
 `var tintAdjustmentMode: UIView.TintAdjustmentMode`
-[详解 UIView 的 Tint Color 属性](TintColor/)
+[详解 UIView 的 Tint Color 属性] - TintColor/文件夹
 
 `var clipsToBounds: Bool`
 一个布尔值，决定子视图是否被限制在视图的范围内。
@@ -171,7 +179,7 @@ The view’s Core Animation layer used for rendering.
 
 `var isUserInteractionEnabled: Bool { get set }`
 
-当设置为false时，用于视图的ouch, press, keyboard, and focus事件将被忽略并从事件队列中删除。当设置为true时，事件将正常地传递给视图。此属性的默认值为true。
+当设置为false时，用于视图的touch, press, keyboard, and focus事件将被忽略并从事件队列中删除。当设置为true时，事件将正常地传递给视图。此属性的默认值为true。
 在动画期间，动画中涉及的所有视图的用户交互都被暂时禁用，不管这个属性中的值是多少。在配置动画时，可以通过指定allowUserInteraction选项禁用此行为。
 
 一些UIKit子类覆盖这个属性并返回一个不同的默认值。请参阅该类的文档，以确定它是否返回不同的值。
@@ -609,12 +617,51 @@ Updates the constraints for the receiving view and its subviews.
 [iOS13简单适配 - 包含UIUserInterfaceStyle讲解及其适配](UIView属性详解/杂项/iOS13简单适配%20-%20简书.pdf)
 
 #### var semanticContentAttribute: UISemanticContentAttribute
-A semantic description of the view’s contents, used to determine whether the view should be flipped when switching between left-to-right and right-to-left layouts.
+视图内容的语义描述，用于确定在从左到右和从右到左的布局之间切换时视图是否应该翻转。
+当在从左到右和从右到左的布局之间切换时，一些视图不应该翻转。例如，视图是回放控件的一部分，或者表示不改变的物理方向(上、下、左、右)。与其考虑视图是否应该改变其方向，不如选择最适合描述视图的语义内容属性。
+当创建包含子视图的视图时，您可以使用userInterfaceLayoutDirection(for:)类方法来确定是否应该翻转子视图，并以适当的顺序布局视图。
+有关可能的值的列表，请参见UISemanticContentAttribute。
+```
+public enum UISemanticContentAttribute : Int {
+
+    case unspecified = 0 
+
+    case playback = 1
+
+    case spatial = 2
+
+    case forceLeftToRight = 3
+
+    case forceRightToLeft = 4
+}
+```
+**unspecified**:视图的默认值。视图在从左到右和从右到左的布局之间切换时会翻转。
+**playback**:A view representing the playback controls, such as Play, Rewind, or Fast Forward buttons or playhead scrubbers. These views are not flipped when switching between left-to-right and right-to-left layouts.
+**spatial**:一种表示方向控制的视图，例如用于文本对齐的段控制，或用于游戏的方向键控制。在从左到右和从右到左的布局之间切换时，这些视图不会被翻转。
+**forceLeftToRight**:始终使用从左到右的布局显示的视图。
+**forceRightToLeft**:A view that is always displayed using a right-to-left layout.
 
 
 #### var effectiveUserInterfaceLayoutDirection: UIUserInterfaceLayoutDirection
-The user interface layout direction appropriate for arranging the immediate content of the view.
+适合于安排视图的直接内容的用户界面布局方向。
+在安排或绘制视图的直接内容时，应该始终查看此属性的值。此外，请注意，不能假设值通过视图的子树传播。
+```
+public enum UIUserInterfaceLayoutDirection : Int {
+    case leftToRight = 0
+
+    case rightToLeft = 1
+}
+```
+
 #### class func userInterfaceLayoutDirection(for: UISemanticContentAttribute) -> UIUserInterfaceLayoutDirection
 Returns the user interface direction for the given semantic content attribute.
+通过调用userInterfaceLayoutDirectionForSemanticContentAttribute:方法获取UIView实例的布局方向
+
 #### class func userInterfaceLayoutDirection(for: UISemanticContentAttribute, relativeTo: UIUserInterfaceLayoutDirection) -> UIUserInterfaceLayoutDirection
 Returns the layout direction implied by the specified semantic content attribute, relative to the specified layout direction.
+
+相关文章：了解即可
+[iOS 阿拉伯语 RTL适配](https://blog.csdn.net/a657651096/article/details/102805114)
+[App的国际化和本地化（六） —— 支持从右到左的语言（一）](https://www.jianshu.com/p/89deaa97ed9a)
+
+#### Constraining Views to the Keyboard
