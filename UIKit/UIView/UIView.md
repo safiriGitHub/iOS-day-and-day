@@ -665,3 +665,84 @@ Returns the layout direction implied by the specified semantic content attribute
 [App的国际化和本地化（六） —— 支持从右到左的语言（一）](https://www.jianshu.com/p/89deaa97ed9a)
 
 #### Constraining Views to the Keyboard
+
+`var keyboardLayoutGuide: UIKeyboardLayoutGuide`
+A layout guide that tracks the keyboard’s position in your app’s layout.
+`@MainActor class UIKeyboardLayoutGuide : UITrackingLayoutGuide`：一个布局指南，它代表了键盘在应用布局中所占的空间。
+`@MainActor class UITrackingLayoutGuide : UILayoutGuide`: 一个布局指南，自动激活和关闭布局约束，取决于其接近边缘。
+`@MainActor class UILayoutGuide : NSObject`:一个可以与自动布局交互的矩形区域。
+
+**相关第三方库**
+
+
+#### Adding and Removing Interactions
+
+`func addInteraction(UIInteraction)`
+Adds an interaction to the view.
+
+`func removeInteraction(UIInteraction)`
+Removes an interaction from the view.
+
+`var interactions: [UIInteraction]`
+The array of interactions for the view.
+
+`protocol UIInteraction`
+The protocol that an interaction implements to access the view that owns it.
+
+#### Drawing and Updating the View
+`func draw(CGRect)`
+Draws the receiver’s image within the passed-in rectangle.
+
+`func setNeedsDisplay()`
+Marks the receiver’s entire bounds rectangle as needing to be redrawn.
+
+`func setNeedsDisplay(CGRect)`
+Marks the specified rectangle of the receiver as needing to be redrawn.
+
+`var contentScaleFactor: CGFloat`
+The scale factor applied to the view.
+讨论
+比例因子决定视图中的内容如何从逻辑坐标空间(以点度量)映射到设备坐标空间(以像素度量)。该值通常为1.0或2.0。更高的比例因子表明视图中的每个点在底层层中由多个像素表示。例如，如果比例因子是2.0，而视图帧的大小是50 x 50点，那么用于显示内容的位图的大小是100 x 100像素。
+此属性的默认值是与当前显示视图的屏幕相关联的比例因子。如果你的自定义视图实现了一个自定义绘制(_:)方法并与一个窗口相关联，或者如果你使用GLKView类来绘制OpenGL ES内容，你的视图将以屏幕的全分辨率绘制。对于系统视图，即使在高分辨率屏幕上，该属性的值也可能是1.0。
+通常，您不需要修改此属性中的值。但是，如果您的应用程序使用OpenGL ES绘图，您可能需要更改比例因子以换取图像质量来换取渲染性能。有关如何调整OpenGL ES渲染环境的更多信息，请参见《OpenGL ES编程指南》中的“支持高分辨率显示”。
+
+`func tintColorDidChange()`
+Called by the system when the tintColor property changes.
+
+#### Updating the View When Property Values Change 当属性值改变时更新视图
+
+`struct UIView.Invalidating`
+A property wrapper that notifies the system that a property value change has invalidated an aspect of the containing view.
+
+The following example uses the UIView.Invalidating wrapper with the display type on the property badgeColor and the display and layout type on the property badgePosition.
+
+```
+class MyView: UIView {
+    @Invalidating(.display) var badgeColor: UIColor
+    
+    @Invalidating(.display, .layout) var badgePosition: UIRectEdge
+}
+```
+
+When you change the badge color, the property wrapper calls setNeedsDisplay(), causing the system to redraw the view. When you change the badge position, the property wrapper also calls setNeedsLayout(), causing the system to update the view’s subviews before it redraws.
+
+`protocol UIViewInvalidating`
+Implements a type of invalidation that can occur on a view that requires an update.
+
+#### Formatting Printed View Content
+打印相关 了解
+`func viewPrintFormatter() -> UIViewPrintFormatter`
+Returns a print formatter for the receiving view.返回视图的打印格式化
+
+`func draw(CGRect, for: UIViewPrintFormatter)`
+Implemented to draw the view’s content for printing.指定区域和打印格式绘画视图内容
+
+#### Managing Gesture Recognizers
+`func addGestureRecognizer(UIGestureRecognizer)`
+
+`func removeGestureRecognizer(UIGestureRecognizer)`
+
+`var gestureRecognizers: [UIGestureRecognizer]?`
+
+`func gestureRecognizerShouldBegin(UIGestureRecognizer) -> Bool`
+[iOS文档补完计划--UIGestureRecognizer](https://www.jianshu.com/p/77929a4baa43)
