@@ -746,3 +746,4 @@ Implemented to draw the view’s content for printing.指定区域和打印格�
 
 `func gestureRecognizerShouldBegin(UIGestureRecognizer) -> Bool`
 [iOS文档补完计划--UIGestureRecognizer](https://www.jianshu.com/p/77929a4baa43)
+[iOS-UIGestureRecognizer详解-原理篇](https://www.jianshu.com/p/4ca805af1570)
